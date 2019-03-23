@@ -20,12 +20,12 @@ client = pymongo.MongoClient('localhost', 27017)
 db = client['rucprintol'].get_collection('rucprintol')
 
 
-@app.route('/')
+@app.route('/api')
 def hello_world():
     return render_template('root.html')
 
 
-@app.route('/order', methods=['POST'])
+@app.route('/api/order', methods=['POST'])
 def place_new_order():
     json_data_dict = json.loads(request.get_data().decode())
 
@@ -54,7 +54,7 @@ def place_new_order():
     })
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/api/upload', methods=['POST'])
 def file_upload():
     file = request.files['file']
     order_id = request.form['order_id']
@@ -76,7 +76,7 @@ def file_upload():
     })
 
 
-@app.route('/pay', methods=['POST'])
+@app.route('/api/pay', methods=['POST'])
 def pay():
     order_id = json.loads(request.get_data().decode())
     db.update_one(order_id, {"$set": {'order_status': {
@@ -88,7 +88,7 @@ def pay():
     return "ok"
 
 
-@app.route('/querypayment', methods=['POST'])
+@app.route('/api/querypayment', methods=['POST'])
 def db_query_payment():
     query = json.loads(request.get_data().decode())
     db_result = db.find({
@@ -112,7 +112,7 @@ def db_query_payment():
     })
 
 
-@app.route('/queryprint', methods=['POST'])
+@app.route('/api/queryprint', methods=['POST'])
 def db_query_print():
     query = json.loads(request.get_data().decode())
     db_result = db.find({
@@ -144,7 +144,7 @@ def db_query_print():
     })
 
 
-@app.route('/querydeliver', methods=['POST'])
+@app.route('/api/querydeliver', methods=['POST'])
 def db_query_deliver():
     query = json.loads(request.get_data().decode())
     db_result = db.find({
@@ -174,7 +174,7 @@ def db_query_deliver():
     })
 
 
-@app.route('/checkpayment', methods=['POST'])
+@app.route('/api/checkpayment', methods=['POST'])
 def payment_check():
     db.find_one_and_update(json.loads(request.get_data().decode()), {"$set": {'order_status': {
         'payment': True,
@@ -185,7 +185,7 @@ def payment_check():
     return "ok"
 
 
-@app.route('/checkprint', methods=['POST'])
+@app.route('/api/checkprint', methods=['POST'])
 def print_check():
     db.find_one_and_update(json.loads(request.get_data().decode()), {"$set": {'order_status': {
         'payment': True,
@@ -196,7 +196,7 @@ def print_check():
     return "ok"
 
 
-@app.route('/checkdeliver', methods=['POST'])
+@app.route('/api/checkdeliver', methods=['POST'])
 def deliver_check():
     db.find_one_and_update(json.loads(request.get_data().decode()), {"$set": {'order_status': {
         'payment': True,
@@ -207,18 +207,18 @@ def deliver_check():
     return "ok"
 
 
-@app.route('/trash', methods=['POST'])
+@app.route('/api/trash', methods=['POST'])
 def trash_order():
     db.find_one_and_update(json.loads(request.get_data().decode()), {
                            "$set": {'trashed': True}})
     return "ok"
 
 
-@app.route('/getfile', methods=['POST'])
+@app.route('/api/getfile', methods=['POST'])
 def get_file():
     order_id = json.loads(request.get_data().decode())['order_id']
     filename = order_id + '.pdf'
-    return send_from_directory('./files', filename, as_attachment=True)
+    return send_from_directory('./api/files', filename, as_attachment=True)
 
 
 app.run(host='0.0.0.0', debug=True, port=5000)
