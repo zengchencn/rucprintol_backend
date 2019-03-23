@@ -27,7 +27,7 @@ def hello_world():
 
 @app.route('/order', methods=['POST'])
 def place_new_order():
-    json_data_dict = json.loads(request.get_data())
+    json_data_dict = json.loads(request.get_data().decode())
 
     id_prefix = str(dict_building_name[json_data_dict['customer_building_name']
                                        ]) + str(dict_building_number[json_data_dict['customer_building_number']])
@@ -78,7 +78,7 @@ def file_upload():
 
 @app.route('/pay', methods=['POST'])
 def pay():
-    order_id = json.loads(request.get_data())
+    order_id = json.loads(request.get_data().decode())
     db.update_one(order_id, {"$set": {'order_status': {
         'payment': True,
         'check': False,
@@ -90,7 +90,7 @@ def pay():
 
 @app.route('/querypayment', methods=['POST'])
 def db_query_payment():
-    query = json.loads(request.get_data())
+    query = json.loads(request.get_data().decode())
     db_result = db.find({
         'order_date': query['order_date'],
         'trashed': False
@@ -114,7 +114,7 @@ def db_query_payment():
 
 @app.route('/queryprint', methods=['POST'])
 def db_query_print():
-    query = json.loads(request.get_data())
+    query = json.loads(request.get_data().decode())
     db_result = db.find({
         'order_date': query['order_date'],
         'order_status': {
@@ -146,7 +146,7 @@ def db_query_print():
 
 @app.route('/querydeliver', methods=['POST'])
 def db_query_deliver():
-    query = json.loads(request.get_data())
+    query = json.loads(request.get_data().decode())
     db_result = db.find({
         'order_date': query['order_date'],
         'order_status': {
@@ -176,7 +176,7 @@ def db_query_deliver():
 
 @app.route('/checkpayment', methods=['POST'])
 def payment_check():
-    db.find_one_and_update(json.loads(request.get_data()), {"$set": {'order_status': {
+    db.find_one_and_update(json.loads(request.get_data().decode()), {"$set": {'order_status': {
         'payment': True,
         'check': True,
         'print': False,
@@ -187,7 +187,7 @@ def payment_check():
 
 @app.route('/checkprint', methods=['POST'])
 def print_check():
-    db.find_one_and_update(json.loads(request.get_data()), {"$set": {'order_status': {
+    db.find_one_and_update(json.loads(request.get_data().decode()), {"$set": {'order_status': {
         'payment': True,
         'check': True,
         'print': True,
@@ -198,7 +198,7 @@ def print_check():
 
 @app.route('/checkdeliver', methods=['POST'])
 def deliver_check():
-    db.find_one_and_update(json.loads(request.get_data()), {"$set": {'order_status': {
+    db.find_one_and_update(json.loads(request.get_data().decode()), {"$set": {'order_status': {
         'payment': True,
         'check': True,
         'print': True,
@@ -209,16 +209,16 @@ def deliver_check():
 
 @app.route('/trash', methods=['POST'])
 def trash_order():
-    db.find_one_and_update(json.loads(request.get_data()), {
+    db.find_one_and_update(json.loads(request.get_data().decode()), {
                            "$set": {'trashed': True}})
     return "ok"
 
 
 @app.route('/getfile', methods=['POST'])
 def get_file():
-    order_id = json.loads(request.get_data())['order_id']
+    order_id = json.loads(request.get_data().decode())['order_id']
     filename = order_id + '.pdf'
     return send_from_directory('./files', filename, as_attachment=True)
 
 
-app.run(debug=True, port=5000)
+app.run(host='0.0.0.0', debug=True, port=5000)
