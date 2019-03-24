@@ -40,12 +40,10 @@ def place_new_order():
         'order_detail': json_data_dict,
         'document_numpages': 0,
         'document_total_price': 0,
-        'order_status': {
-            'payment': False,
-            'check': False,
-            'print': False,
-            'deliver': False
-        },
+        'order_status_payment': False,
+        'order_status_check': False,
+        'order_status_print': False,
+        'order_status_deliver': False,
         'trashed': False
     }
     db.insert_one(order)
@@ -79,12 +77,7 @@ def file_upload():
 @app.route('/api/pay', methods=['POST'])
 def pay():
     order_id = json.loads(request.get_data().decode())
-    db.update_one(order_id, {"$set": {'order_status': {
-        'payment': True,
-        'check': False,
-        'print': False,
-        'deliver': False
-    }}})
+    db.update_one(order_id, {"$set": {'order_status_payment': True}})
     return "ok"
 
 
@@ -105,10 +98,10 @@ def db_query_payment():
             'document_numpages': doc['document_numpages'],
             'paper_binding': doc['order_detail']['paper_binding'],
             'customer_room_number': doc['order_detail']['customer_room_number'],
-            'order_payment': doc['order_status']['payment'],
-            'order_check': doc['order_status']['check'],
-            'order_print': doc['order_status']['print'],
-            'order_deliver': doc['order_status']['deliver']
+            'order_payment': doc['order_status_payment'],
+            'order_check': doc['order_status_check'],
+            'order_print': doc['order_status_print'],
+            'order_deliver': doc['order_status_deliver']
         })
     return jsonify({
         'data': arr_result
@@ -120,12 +113,10 @@ def db_query_print():
     query = json.loads(request.get_data().decode())
     db_result = db.find({
         'order_date': query['order_date'],
-        'order_status': {
-            'print': True,
-            'payment': True,
-            'deliver': False,
-            'check': False
-        },
+        'order_status_payment': True,
+        'order_status_check': True,
+        'order_status_print': False,
+        'order_status_deliver': False,
         'trashed': False
     })
     arr_result = []
@@ -152,12 +143,10 @@ def db_query_deliver():
     query = json.loads(request.get_data().decode())
     db_result = db.find({
         'order_date': query['order_date'],
-        'order_status': {
-            'payment': True,
-            'check': True,
-            'print': True,
-            'deliver': False
-        },
+        'order_status_payment': True,
+        'order_status_check': True,
+        'order_status_print': True,
+        'order_status_deliver': False,
         'trashed': False
     })
     arr_result = []
@@ -179,34 +168,22 @@ def db_query_deliver():
 
 @app.route('/api/checkpayment', methods=['POST'])
 def payment_check():
-    db.find_one_and_update(json.loads(request.get_data().decode()), {"$set": {'order_status': {
-        'payment': True,
-        'check': True,
-        'print': False,
-        'deliver': False
-    }}})
+    db.find_one_and_update(json.loads(request.get_data().decode()), {
+                           "$set": {'order_status_check': True}})
     return "ok"
 
 
 @app.route('/api/checkprint', methods=['POST'])
 def print_check():
-    db.find_one_and_update(json.loads(request.get_data().decode()), {"$set": {'order_status': {
-        'payment': True,
-        'check': True,
-        'print': True,
-        'deliver': False
-    }}})
+    db.find_one_and_update(json.loads(request.get_data().decode()), {
+                           "$set": {'order_status_print': True}})
     return "ok"
 
 
 @app.route('/api/checkdeliver', methods=['POST'])
 def deliver_check():
-    db.find_one_and_update(json.loads(request.get_data().decode()), {"$set": {'order_status': {
-        'payment': True,
-        'check': True,
-        'print': True,
-        'deliver': True
-    }}})
+    db.find_one_and_update(json.loads(request.get_data().decode()), {
+                           "$set": {'order_status_deliver': True}})
     return "ok"
 
 
