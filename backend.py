@@ -131,7 +131,7 @@ def db_query_print():
             'paper_sig_or_dbl': doc['order_detail']['paper_sig_or_dbl'],
             'paper_binding': doc['order_detail']['paper_binding'],
             'total_copy_count': doc['order_detail']['total_copy_count'],
-            'order_print': doc['order_status']['print']
+            'order_print': doc['order_status_print']
         })
     return jsonify({
         'data': arr_result
