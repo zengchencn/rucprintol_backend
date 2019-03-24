@@ -169,7 +169,7 @@ def db_query_deliver():
 @app.route('/api/checkpayment', methods=['POST'])
 def payment_check():
     db.find_one_and_update(json.loads(request.get_data().decode()), {
-                           "$set": {'order_status_check': True}})
+                           "$set": {'order_status_check': True, 'order_status_payment': True}})
     return "ok"
 
 
