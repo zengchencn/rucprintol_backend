@@ -121,10 +121,10 @@ def db_query_print():
     db_result = db.find({
         'order_date': query['order_date'],
         'order_status': {
+            'print': True,
             'payment': True,
-            'check': True,
-            'print': False,
-            'deliver': False
+            'deliver': False,
+            'check': False
         },
         'trashed': False
     })
