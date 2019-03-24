@@ -58,7 +58,7 @@ def place_new_order():
 def file_upload():
     file = request.files['file']
     order_id = request.form['order_id']
-    file.save('./files/' + order_id + '.pdf')
+    file.save('/var/www/html/static/' + order_id + '.pdf')
     num_pages = PdfFileReader(file).getNumPages()
     order_detail = db.find_one({'order_id': order_id}
                                )['order_detail']
@@ -102,6 +102,9 @@ def db_query_payment():
             'customer_name': doc['order_detail']['customer_name'],
             'customer_phone': doc['order_detail']['customer_phone'],
             'document_total_price': doc['document_total_price'],
+            'document_numpages': doc['document_numpages'],
+            'paper_binding': doc['order_detail']['paper_binding'],
+            'customer_building_number': doc['order_detail']['customer_building_number'],
             'order_payment': doc['order_status']['payment'],
             'order_check': doc['order_status']['check'],
             'order_print': doc['order_status']['print'],
@@ -218,7 +221,7 @@ def trash_order():
 def get_file():
     order_id = json.loads(request.get_data().decode())['order_id']
     filename = order_id + '.pdf'
-    return send_from_directory('./files', filename, as_attachment=True)
+    return send_from_directory('/var/www/html', filename, as_attachment=True)
 
 
 app.run(host='0.0.0.0', debug=True, port=5000)
