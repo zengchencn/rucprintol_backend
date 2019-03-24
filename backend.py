@@ -104,7 +104,7 @@ def db_query_payment():
             'document_total_price': doc['document_total_price'],
             'document_numpages': doc['document_numpages'],
             'paper_binding': doc['order_detail']['paper_binding'],
-            'customer_building_number': doc['order_detail']['customer_building_number'],
+            'customer_room_number': doc['order_detail']['customer_room_number'],
             'order_payment': doc['order_status']['payment'],
             'order_check': doc['order_status']['check'],
             'order_print': doc['order_status']['print'],
