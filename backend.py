@@ -222,6 +222,3 @@ def get_file():
     order_id = json.loads(request.get_data().decode())['order_id']
     filename = order_id + '.pdf'
     return send_from_directory('/var/www/html', filename, as_attachment=True)
-
-
-app.run(host='0.0.0.0', debug=True, port=5000)
