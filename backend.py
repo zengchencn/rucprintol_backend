@@ -115,8 +115,6 @@ def db_query_print():
         'order_date': query['order_date'],
         'order_status_payment': True,
         'order_status_check': True,
-        'order_status_print': False,
-        'order_status_deliver': False,
         'trashed': False
     })
     arr_result = []
