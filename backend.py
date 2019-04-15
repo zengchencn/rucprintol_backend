@@ -158,7 +158,7 @@ def db_query_deliver():
             'customer_building_number': doc['order_detail']['customer_building_number'],
             'customer_room_number': doc['order_detail']['customer_room_number'],
             'total_copy_count': doc['order_detail']['total_copy_count'],
-            'order_deliver': doc['order_status']['deliver']
+            'order_deliver': doc['order_status_deliver']
         })
     return jsonify({
         'data': arr_result
