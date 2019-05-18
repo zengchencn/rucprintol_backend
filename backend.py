@@ -15,6 +15,7 @@ CORS(app)
 
 dict_building_name = {"品园": 1, "知行": 2, "东风": 3}
 dict_building_number = {"一楼": 1, "二楼": 2, "三楼": 3, "四楼": 4, "五楼": 5, "六楼": 6}
+days_of_month = {"1": 31, "2": 28, "3": 31, "4": 30, "5": 31, "6": 30, "7": 31, "8": 31, "9": 30, "10": 31, "11": 30, "12": 31}
 
 client = pymongo.MongoClient('localhost', 27017)
 db = client['rucprintol'].get_collection('rucprintol')
@@ -183,6 +184,26 @@ def db_query_deliver():
     return jsonify({
         'data': arr_result
     })
+
+@app.route('/api/queryprofit', methods=['POST'])
+def db_query_profit():
+    query = json.loads(request.get_data().decode())
+    year = query['year']
+    month = query['month']
+    days = days_of_month[string(month)]
+    arr_result = []
+    for q in range(days):
+        qcode = str(year) + "%02d" % month + "%02d" % (q + 1)
+        db_result = db.find({
+            'order_date': qcode,
+            'trashed': False
+        })
+        arr_result.append(db_result)
+    return jsonify({
+        'data': arr_result
+    })
+
+
 
 
 @app.route('/api/checkpayment', methods=['POST'])
