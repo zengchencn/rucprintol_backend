@@ -150,7 +150,7 @@ def db_query_print():
             'total_copy_count': doc['order_detail']['total_copy_count'],
             'order_print': doc['order_status_print'],
             'document_numpages': doc['document_numpages'],
-            'pptOption': doc['order_detail']['pptOption']
+            'pptOption': ppt
         })
     return jsonify({
         'data': arr_result
