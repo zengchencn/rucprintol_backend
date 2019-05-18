@@ -60,10 +60,11 @@ def file_upload():
                                )['order_detail']
     file.save('/var/www/html/static/' + order_id + '.pdf')
     num_pages = PdfFileReader(file).getNumPages()
-    if order_detail['pptOption'] == '四合一':
-        num_pages = math.ceil(float(num_pages) / 4)
-    if order_detail['pptOption'] == '六合一':
-        num_pages = math.ceil(float(num_pages) / 6)
+    if 'pptOption' in order_detail
+        if order_detail['pptOption'] == '四合一':
+            num_pages = math.ceil(float(num_pages) / 4)
+        if order_detail['pptOption'] == '六合一':
+            num_pages = math.ceil(float(num_pages) / 6)
     total_price = (float(order_detail['unit_price']) * num_pages +
                    float(order_detail['binding_price']))*float(order_detail['total_copy_count'])
     db.update_one({'order_id': order_id}, {
@@ -105,7 +106,9 @@ def db_query_payment():
             'order_payment': doc['order_status_payment'],
             'order_check': doc['order_status_check'],
             'order_print': doc['order_status_print'],
-            'order_deliver': doc['order_status_deliver']
+            'order_deliver': doc['order_status_deliver'],
+            'shareOption': doc['order_detail']['shareOption'],
+            'pptOption': doc['order_detail']['pptOption']
         })
     return jsonify({
         'data': arr_result
@@ -134,7 +137,8 @@ def db_query_print():
             'paper_binding': doc['order_detail']['paper_binding'],
             'total_copy_count': doc['order_detail']['total_copy_count'],
             'order_print': doc['order_status_print'],
-            'document_numpages': doc['document_numpages']
+            'document_numpages': doc['document_numpages'],
+            'pptOption': doc['order_detail']['pptOption']
         })
     return jsonify({
         'data': arr_result
