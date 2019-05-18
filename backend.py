@@ -60,7 +60,7 @@ def file_upload():
                                )['order_detail']
     file.save('/var/www/html/static/' + order_id + '.pdf')
     num_pages = PdfFileReader(file).getNumPages()
-    if 'pptOption' in order_detail
+    if 'pptOption' in order_detail:
         if order_detail['pptOption'] == '四合一':
             num_pages = math.ceil(float(num_pages) / 4)
         if order_detail['pptOption'] == '六合一':
