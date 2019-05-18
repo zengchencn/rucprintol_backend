@@ -95,6 +95,14 @@ def db_query_payment():
     })
     arr_result = []
     for doc in db_result:
+        if 'shareOption' not in doc['order_detail']:
+            share = '无'
+        else:
+            share = doc['order_detail']['shareOption']
+        if 'pptOption' not in doc['order_detail']:
+            ppt = '无'
+        else:
+            ppt = doc['order_detail']['pptOption']
         arr_result.append({
             'order_id': doc['order_id'],
             'customer_name': doc['order_detail']['customer_name'],
@@ -107,8 +115,8 @@ def db_query_payment():
             'order_check': doc['order_status_check'],
             'order_print': doc['order_status_print'],
             'order_deliver': doc['order_status_deliver'],
-            'shareOption': doc['order_detail']['shareOption'],
-            'pptOption': doc['order_detail']['pptOption']
+            'shareOption': share,
+            'pptOption': ppt
         })
     return jsonify({
         'data': arr_result
@@ -126,6 +134,10 @@ def db_query_print():
     })
     arr_result = []
     for doc in db_result:
+        if 'pptOption' not in doc['order_detail']:
+            ppt = '无'
+        else:
+            ppt = doc['order_detail']['pptOption']
         arr_result.append({
             'order_id': doc['order_id'],
             'customer_name': doc['order_detail']['customer_name'],
