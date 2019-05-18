@@ -190,7 +190,7 @@ def db_query_profit():
     query = json.loads(request.get_data().decode())
     year = query['year']
     month = query['month']
-    days = days_of_month[string(month)]
+    days = days_of_month[str(month)]
     arr_result = []
     for q in range(days):
         qcode = str(year) + "%02d" % month + "%02d" % (q + 1)
@@ -198,7 +198,8 @@ def db_query_profit():
             'order_date': qcode,
             'trashed': False
         })
-        arr_result.append(db_result)
+        for doc in db_result:
+            arr_result.append(doc)
     return jsonify({
         'data': arr_result
     })
