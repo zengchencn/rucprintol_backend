@@ -6,7 +6,7 @@ import os
 import time
 import pymongo
 import string
-
+import math
 
 app = Flask(__name__)
 
@@ -56,10 +56,14 @@ def place_new_order():
 def file_upload():
     file = request.files['file']
     order_id = request.form['order_id']
-    file.save('/var/www/html/static/' + order_id + '.pdf')
-    num_pages = PdfFileReader(file).getNumPages()
     order_detail = db.find_one({'order_id': order_id}
                                )['order_detail']
+    file.save('/var/www/html/static/' + order_id + '.pdf')
+    num_pages = PdfFileReader(file).getNumPages()
+    if order_detail['pptOption'] == '四合一':
+        num_pages = math.ceil(float(num_pages) / 4)
+    if order_detail['pptOption'] == '六合一':
+        num_pages = math.ceil(float(num_pages) / 6)
     total_price = (float(order_detail['unit_price']) * num_pages +
                    float(order_detail['binding_price']))*float(order_detail['total_copy_count'])
     db.update_one({'order_id': order_id}, {
